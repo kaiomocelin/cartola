@@ -12,17 +12,17 @@
             :rows-per-page-options="[0]"
         >
             <template v-slot:body-cell-clube_id="props">
-                <q-td :props="props">
+                <q-td style="width: 20px" :props="props">
                     <img id="shield" :src="shieldTeam(props.row.clube_id)" />
                 </q-td>
             </template>
             <template v-slot:body-cell-status_id>
-                <q-td class="text-center">
+                <q-td style="width: 20px" class="text-center">
                     <i class="fa fa-check"></i>
                 </q-td>
             </template>
             <template #body-cell-posicao_id="props">
-                <q-td :props="props">
+                <q-td style="width: 50px" :props="props">
                     {{ getPosition(props.row) }}
                 </q-td>
             </template>
@@ -45,14 +45,15 @@ export default {
                 {
                     name: "clube_id",
                     label: "Time",
-                    align: "center",
+                    align: "left",
+                    style:'width: 20px',
                     field: (row) => row.clube_id,
                     // format: (val) => `${val}`,
                     sortable: true,
                 },
                 {
                     name: "status_id",
-                    align: "center",
+                    align: "left",
                     label: "Status",
                     field: "status_id",
                     sortable: true,
@@ -60,6 +61,7 @@ export default {
                 {
                     name: "apelido",
                     align: "left",
+                    style:'width: 240px',
                     label: "Jogador",
                     field: "apelido",
                     sortable: true,
