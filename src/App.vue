@@ -10,15 +10,19 @@
             />
         </q-header>
 
-        <q-page-container> </q-page-container>
+        <q-page-container>
+            <MarketTable/>   
+        </q-page-container>
     </q-layout>
 </template>
 
 <script>
-
+import MarketTable from "@/components/MarketTable.vue";
 export default {
     name: "LayoutDefault",
 
-    components: {},
+    components: {
+        MarketTable
+    },
 };
 </script>
