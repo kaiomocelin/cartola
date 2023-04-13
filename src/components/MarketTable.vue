@@ -1,154 +1,151 @@
 <template>
     <div class="q-pa-md">
-        <q-table title="Mercado" :columns="columns" :rows="rows"></q-table>
+        <q-table
+            title="Mercado"
+            :columns="columns"
+            :rows="playersList"
+            flat
+            bordered
+            dark
+            :rows-per-page-options="[15]"
+        >
+            <template v-slot:body-cell-clube_id="props">
+                <q-td :props="props">
+                    <img id="shield" :src="shieldTeam(props.row.clube_id)" />
+                </q-td>
+            </template>
+            <template v-slot:body-cell-status_id>
+                <q-td class="text-center">
+                    <i class="fa fa-check"></i>
+                </q-td>
+            </template>
+            <template #body-cell-posicao_id="props">
+                <q-td :props="props">
+                    {{ getPosition(props.row) }}
+                </q-td>
+            </template>
+        </q-table>
     </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
     name: "MarketTable",
 
     data() {
         return {
+            players: [],
+            playersList: [],
+            teams: [],
+            positions: [],
             columns: [
                 {
-                    name: "name",
-                    required: true,
-                    label: "Dessert (100g serving)",
-                    align: "left",
-                    field: (row) => row.name,
-                    format: (val) => `${val}`,
-                    sortable: true,
-                },
-                {
-                    name: "calories",
+                    name: "clube_id",
+                    label: "Time",
                     align: "center",
-                    label: "Calories",
-                    field: "calories",
+                    field: (row) => row.clube_id,
+                    // format: (val) => `${val}`,
                     sortable: true,
                 },
-                { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-                { name: "carbs", label: "Carbs (g)", field: "carbs" },
-                { name: "protein", label: "Protein (g)", field: "protein" },
-                { name: "sodium", label: "Sodium (mg)", field: "sodium" },
                 {
-                    name: "calcium",
-                    label: "Calcium (%)",
-                    field: "calcium",
+                    name: "status_id",
+                    align: "center",
+                    label: "Status",
+                    field: "status_id",
                     sortable: true,
-                    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
                 },
                 {
-                    name: "iron",
-                    label: "Iron (%)",
-                    field: "iron",
+                    name: "apelido",
+                    align: "left",
+                    label: "Jogador",
+                    field: "apelido",
                     sortable: true,
-                    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-                },
-            ],
-            rows: [
-                {
-                    name: "Frozen Yogurt",
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0,
-                    sodium: 87,
-                    calcium: "14%",
-                    iron: "1%",
                 },
                 {
-                    name: "Ice cream sandwich",
-                    calories: 237,
-                    fat: 9.0,
-                    carbs: 37,
-                    protein: 4.3,
-                    sodium: 129,
-                    calcium: "8%",
-                    iron: "1%",
+                    name: "posicao_id",
+                    align: "left",
+                    label: "Posição",
+                    field: "posicao_id",
+                    sortable: true,
                 },
                 {
-                    name: "Eclair",
-                    calories: 262,
-                    fat: 16.0,
-                    carbs: 23,
-                    protein: 6.0,
-                    sodium: 337,
-                    calcium: "6%",
-                    iron: "7%",
+                    name: "jogos_num",
+                    align: "right",
+                    label: "Jogos",
+                    field: "jogos_num",
+                    sortable: true,
                 },
                 {
-                    name: "Cupcake",
-                    calories: 305,
-                    fat: 3.7,
-                    carbs: 67,
-                    protein: 4.3,
-                    sodium: 413,
-                    calcium: "3%",
-                    iron: "8%",
+                    name: "preco_num",
+                    align: "right",
+                    label: "Preço",
+                    field: "preco_num",
+                    sortable: true,
                 },
                 {
-                    name: "Gingerbread",
-                    calories: 356,
-                    fat: 16.0,
-                    carbs: 49,
-                    protein: 3.9,
-                    sodium: 327,
-                    calcium: "7%",
-                    iron: "16%",
+                    name: "pontos_num",
+                    align: "right",
+                    label: "Última",
+                    field: "pontos_num",
+                    sortable: true,
                 },
                 {
-                    name: "Jelly bean",
-                    calories: 375,
-                    fat: 0.0,
-                    carbs: 94,
-                    protein: 0.0,
-                    sodium: 50,
-                    calcium: "0%",
-                    iron: "0%",
+                    name: "media_num",
+                    align: "right",
+                    label: "Média",
+                    field: "media_num",
+                    sortable: true,
                 },
                 {
-                    name: "Lollipop",
-                    calories: 392,
-                    fat: 0.2,
-                    carbs: 98,
-                    protein: 0,
-                    sodium: 38,
-                    calcium: "0%",
-                    iron: "2%",
-                },
-                {
-                    name: "Honeycomb",
-                    calories: 408,
-                    fat: 3.2,
-                    carbs: 87,
-                    protein: 6.5,
-                    sodium: 562,
-                    calcium: "0%",
-                    iron: "45%",
-                },
-                {
-                    name: "Donut",
-                    calories: 452,
-                    fat: 25.0,
-                    carbs: 51,
-                    protein: 4.9,
-                    sodium: 326,
-                    calcium: "2%",
-                    iron: "22%",
-                },
-                {
-                    name: "KitKat",
-                    calories: 518,
-                    fat: 26.0,
-                    carbs: 65,
-                    protein: 7,
-                    sodium: 54,
-                    calcium: "12%",
-                    iron: "6%",
+                    name: "minimo_para_valorizar",
+                    label: "Mín. p/ Valorizar",
+                    field: "minimo_para_valorizar",
+                    sortable: true,
                 },
             ],
         };
+    },
+
+    computed: {
+        positionOptions() {
+            return [
+                { value: 0, text: "Todas" },
+                ...Object.entries(this.positions).map((i) => {
+                    return { value: i[1].id, text: i[1].nome };
+                }),
+            ];
+        },
+    },
+
+    mounted() {
+        this.load();
+    },
+
+    methods: {
+        load() {
+            axios
+                .get("https://api.cartola.globo.com/atletas/mercado")
+                .then((res) => {
+                    this.players = res.data.atletas.filter(
+                        (i) => i.status_id == 7
+                    );
+                    this.playersList = this.players;
+                    this.teams = res.data.clubes;
+                    this.positions = res.data.posicoes;
+                });
+        },
+
+        getPosition(player) {
+            let positions = Object.entries(this.positions);
+            return positions.filter((i) => i[0] == player.posicao_id)[0][1]
+                .nome;
+        },
+
+        shieldTeam(code) {
+            let teams = Object.entries(this.teams);
+            return teams.filter((i) => i[0] == code)[0][1].escudos["30x30"];
+        },
     },
 };
 </script>
