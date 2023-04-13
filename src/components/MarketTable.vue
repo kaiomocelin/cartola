@@ -1,13 +1,15 @@
 <template>
     <div class="q-pa-md">
         <q-table
+            style="height: 90vh"
             title="Mercado"
             :columns="columns"
             :rows="playersList"
             flat
             bordered
             dark
-            :rows-per-page-options="[15]"
+            virtual-scroll
+            :rows-per-page-options="[0]"
         >
             <template v-slot:body-cell-clube_id="props">
                 <q-td :props="props">
