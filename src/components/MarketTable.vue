@@ -17,6 +17,26 @@
                 <q-inner-loading showing color="primary" />
             </template>
             <template v-slot:top-right>
+                <q-select
+                    class="q-mr-sm"
+                    dark
+                    use-input
+                    dense
+                    label="Time"
+                    input-debounce="0"
+                    @filter="filterTeamFn"
+                    v-model="teamFilter"
+                    :options="stringTeamOptions"
+                    style="width: 250px"
+                >
+                    <template v-slot:no-option>
+                        <q-item>
+                            <q-item-section class="text-grey">
+                                No results
+                            </q-item-section>
+                        </q-item>
+                    </template>
+                </q-select>
                 <q-input
                     dark
                     borderless
@@ -51,6 +71,7 @@
 
 <script>
 import axios from "axios";
+import { ref } from "vue";
 export default {
     name: "MarketTable",
 
@@ -62,6 +83,8 @@ export default {
             positions: [],
             loadingTableData: true,
             filter: "",
+            teamFilter: "",
+            stringTeamOptions: [],
             columns: [
                 {
                     name: "clube_id",
@@ -140,6 +163,11 @@ export default {
                     return { value: i[1].id, text: i[1].nome };
                 })
             ];
+        },
+
+        teamOptions() {
+            let teams = Object.values(JSON.parse(JSON.stringify(this.teams)));
+            return teams.map((i) => i.nome);
         }
     },
 
@@ -159,6 +187,8 @@ export default {
                     this.playersList = this.players;
                     this.teams = res.data.clubes;
                     this.positions = res.data.posicoes;
+
+                    this.stringTeamOptions = ref(this.teamOptions);
                 })
                 .finally(() => {
                     this.loadingTableData = false;
@@ -174,6 +204,25 @@ export default {
         shieldTeam(code) {
             let teams = Object.entries(this.teams);
             return teams.filter((i) => i[0] == code)[0][1].escudos["30x30"];
+        },
+
+        filterTeamFn(val, update) {
+            if (val === "") {
+                update(() => {
+                    this.stringTeamOptions = this.teamOptions;
+
+                    // here you have access to "ref" which
+                    // is the Vue reference of the QSelect
+                });
+                return;
+            }
+
+            update(() => {
+                const needle = val.toLowerCase();
+                this.stringTeamOptions = this.teamOptions.filter(
+                    (v) => v.toLowerCase().indexOf(needle) > -1
+                );
+            });
         }
     }
 };
